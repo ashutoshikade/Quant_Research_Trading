@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Ashutosh Ekade">
+
+<title>Homework 4</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="pset4_questions_files/libs/clipboard/clipboard.min.js"></script>
+<script src="pset4_questions_files/libs/quarto-html/quarto.js"></script>
+<script src="pset4_questions_files/libs/quarto-html/popper.min.js"></script>
+<script src="pset4_questions_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="pset4_questions_files/libs/quarto-html/anchor.min.js"></script>
+<link href="pset4_questions_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="pset4_questions_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="pset4_questions_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="pset4_questions_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="pset4_questions_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Homework 4</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Ashutosh Ekade </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="question-1-linear-regression-with-normal-errors" class="level2">
+<h2 class="anchored" data-anchor-id="question-1-linear-regression-with-normal-errors">Question 1: Linear Regression with Normal Errors</h2>
+<p>Load the <code>BostonHousing2</code> dataset from the <code>mlbench</code> package, which has data on 506 census tracts from the 1970’s. Assume the model is <span class="math inline">\(Y = \beta_0 + \beta_1X_1 + \beta_2X_2 + \beta_3X_3 + e\)</span> with <span class="math inline">\(e \sim N(0,\sigma^2)\)</span>, observations are independent, and where <span class="math inline">\(Y\)</span> denotes <code>medv</code> (the median value of homes in 1000’s of dollars), <span class="math inline">\(X_1\)</span> denotes <code>rm</code> (the average number of rooms per home), <span class="math inline">\(X_2\)</span> denotes <code>age</code> (the proportion of older homes), and <span class="math inline">\(X_3\)</span> denotes <code>crim</code> (the crime rate in the area). See <code>?mlbench::BostonHousing2</code> for definitions of these variables.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages('mlbench')</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlbench)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">'BostonHousing2'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="a-write-mathematically-the-joint-log-likelihood-function.-what-link-function-or-inverse-link-function-is-required-to-connect-mu_i-to-x_ibeta" class="level4">
+<h4 class="anchored" data-anchor-id="a-write-mathematically-the-joint-log-likelihood-function.-what-link-function-or-inverse-link-function-is-required-to-connect-mu_i-to-x_ibeta">1.a) Write, mathematically, the joint log-likelihood function. What link function (or inverse link function) is required to “connect” <span class="math inline">\(\mu_i\)</span> to <span class="math inline">\(x_i'\beta\)</span>?</h4>
+<p>$$</p>
+<p><span class="math display">\[\begin{align}
+&amp; \\l(\beta, \sigma^2)
+&amp;= \sum_{i=1}^{n} \log f(Y_i | Y_i, \beta, \sigma^2) \\
+&amp;= -\frac{n}{2} \log(2\pi) - \frac{n}{2} \log(\sigma^2) -\frac{1}{2\sigma^2} \sum_{i=1}^{n} (Y_i - X'_i \beta)^2 \\
+&amp;= -\frac{n}{2} \log(2\pi) - \frac{n}{2} \log(\sigma^2) -\frac{1}{2\sigma^2} \sum_{i=1}^{n} (Y - X\beta)'(Y - X\beta) \\
+\end{align}\]</span></p>
+<p>$$</p>
+</section>
+<section id="b-write-an-r-function-to-calculate-the-log-likelihood-function-from-1a-above.-your-function-should-take-3-arguments-1-theta-beta-sigma2-a-vector-of-all-five-parameters-2-an-n-times-k-matrix-x-and-3-a-vector-or-n-times-1-matrix-y." class="level4">
+<h4 class="anchored" data-anchor-id="b-write-an-r-function-to-calculate-the-log-likelihood-function-from-1a-above.-your-function-should-take-3-arguments-1-theta-beta-sigma2-a-vector-of-all-five-parameters-2-an-n-times-k-matrix-x-and-3-a-vector-or-n-times-1-matrix-y.">1.b) Write an <code>R</code> function to calculate the log-likelihood function from 1a above. Your function should take 3 arguments: (1) <span class="math inline">\(\theta = (\beta, \sigma^2)\)</span> a vector of all (five) parameters, (2) an <span class="math inline">\(n \times k\)</span> matrix <span class="math inline">\(X\)</span>, and (3) a vector or <span class="math inline">\(n \times 1\)</span> matrix <span class="math inline">\(y\)</span>.</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>log_likelihood <span class="ot">&lt;-</span> <span class="cf">function</span>(theta, X, y) {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>      beta <span class="ot">&lt;-</span> theta[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>]</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>      sigma_sq <span class="ot">&lt;-</span> theta[<span class="dv">5</span>]</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>      <span class="co"># log-likelihood</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>      n <span class="ot">&lt;-</span> <span class="fu">length</span>(y)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      residuals <span class="ot">&lt;-</span> y <span class="sc">-</span> X <span class="sc">%*%</span> beta</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>      log_likelihood_value <span class="ot">&lt;-</span> <span class="sc">-</span>n<span class="sc">/</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">log</span>(<span class="dv">2</span> <span class="sc">*</span> pi) <span class="sc">-</span> n<span class="sc">/</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">log</span>(sigma_sq) <span class="sc">-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">2</span> <span class="sc">*</span> sigma_sq) <span class="sc">*</span> <span class="fu">sum</span>(residuals<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(log_likelihood_value)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  }</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="c-use-optim-and-your-function-from-1b-to-find-hatbeta_textmle-and-hatsigma2_textmle-as-well-as-their-standard-errors.-you-may-find-it-helpful-to-initialize-your-search-at-0-for-the-beta-parameters-and-textvary-for-sigma2.-you-will-likely-find-some-differences-in-your-standard-errors-compared-to-the-output-from-lm-in-1d-below.-this-is-because-lm-uses-analytical-expressions-for-the-standard-errors-whereas-optim-uses-numerical-approximations-to-the-hessian-matrix." class="level4">
+<h4 class="anchored" data-anchor-id="c-use-optim-and-your-function-from-1b-to-find-hatbeta_textmle-and-hatsigma2_textmle-as-well-as-their-standard-errors.-you-may-find-it-helpful-to-initialize-your-search-at-0-for-the-beta-parameters-and-textvary-for-sigma2.-you-will-likely-find-some-differences-in-your-standard-errors-compared-to-the-output-from-lm-in-1d-below.-this-is-because-lm-uses-analytical-expressions-for-the-standard-errors-whereas-optim-uses-numerical-approximations-to-the-hessian-matrix.">1.c) Use <code>optim()</code> and your function from 1b to find <span class="math inline">\(\hat{\beta}_\text{MLE}\)</span> and <span class="math inline">\(\hat{\sigma}^2_\text{MLE}\)</span> as well as their standard errors. You may find it helpful to initialize your search at 0 for the <span class="math inline">\(\beta\)</span> parameters and <span class="math inline">\(\text{var}(y)\)</span> for <span class="math inline">\(\sigma^2\)</span>. You will likely find some differences in your standard errors compared to the output from <code>lm()</code> in 1d below. This is because <code>lm()</code> uses analytical expressions for the standard errors, whereas <code>optim()</code> uses numerical approximations to the Hessian matrix.</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="dv">1</span>,BostonHousing2<span class="sc">$</span>rm,BostonHousing2<span class="sc">$</span>age,BostonHousing2<span class="sc">$</span>crim)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">matrix</span>(BostonHousing2<span class="sc">$</span>medv,<span class="at">ncol=</span><span class="dv">1</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>initial_parameters <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="fu">var</span>(Y))</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#optimization function is called</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="at">par =</span> initial_parameters, <span class="at">fn =</span> log_likelihood,  <span class="at">X=</span>X, <span class="at">y=</span>Y,<span class="at">control =</span> <span class="fu">list</span>(<span class="at">fnscale =</span> <span class="sc">-</span><span class="dv">1</span>),<span class="at">hessian =</span> <span class="cn">TRUE</span>,<span class="at">method =</span> <span class="st">"BFGS"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in log(sigma_sq): NaNs produced
+
+Warning in log(sigma_sq): NaNs produced</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(result) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$par
+[1] -23.60366982   8.03253919  -0.05224289  -0.21102912  36.83582886
+
+$value
+[1] -1630.435
+
+$counts
+function gradient 
+      58       23 
+
+$convergence
+[1] 0
+
+$message
+NULL
+
+$hessian
+              [,1]          [,2]          [,3]          [,4]          [,5]
+[1,] -1.373663e+01 -8.632967e+01 -9.419878e+02 -4.963762e+01 -5.229595e-06
+[2,] -8.632967e+01 -5.493184e+02 -5.854902e+03 -2.937887e+02 -8.458301e-05
+[3,] -9.419878e+02 -5.854902e+03 -7.545954e+04 -4.574757e+03 -3.916512e-05
+[4,] -4.963762e+01 -2.937887e+02 -4.574757e+03 -1.193684e+03 -3.902301e-05
+[5,] -5.229595e-06 -8.458301e-05 -3.916512e-05 -3.902301e-05 -1.864794e-01</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#MLE estimates</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>beta_mle <span class="ot">&lt;-</span> result<span class="sc">$</span>par[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>]</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>sigma_square_mle <span class="ot">&lt;-</span> result<span class="sc">$</span>par[<span class="dv">5</span>]</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>std_error <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="sc">-</span><span class="fu">diag</span>(<span class="fu">solve</span>(result<span class="sc">$</span>hessian)))</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Beta MLE"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Beta MLE"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(beta_mle)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -23.60366982   8.03253919  -0.05224289  -0.21102912</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Sigma Square MLE"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Sigma Square MLE"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(sigma_square_mle)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 36.83583</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Standard Error"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Standard Error"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(std_error)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2.75832954 0.40040222 0.01042100 0.03392967 2.31571187</code></pre>
+</div>
+</div>
+</section>
+<section id="d-use-lm-and-summary-to-check-your-work-in-1c-above." class="level4">
+<h4 class="anchored" data-anchor-id="d-use-lm-and-summary-to-check-your-work-in-1c-above.">1.d) Use <code>lm()</code> and <code>summary()</code> to check your work in 1c above.</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(BostonHousing2<span class="sc">$</span>medv <span class="sc">~</span> BostonHousing2<span class="sc">$</span>rm<span class="sc">+</span>BostonHousing2<span class="sc">$</span>age<span class="sc">+</span>BostonHousing2<span class="sc">$</span>crim))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = BostonHousing2$medv ~ BostonHousing2$rm + BostonHousing2$age + 
+    BostonHousing2$crim)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-19.959  -3.143  -0.633   2.150  39.940 
+
+Coefficients:
+                     Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)         -23.60556    2.76938  -8.524  &lt; 2e-16 ***
+BostonHousing2$rm     8.03284    0.40201  19.982  &lt; 2e-16 ***
+BostonHousing2$age   -0.05224    0.01046  -4.993 8.21e-07 ***
+BostonHousing2$crim  -0.21102    0.03407  -6.195 1.22e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 6.094 on 502 degrees of freedom
+Multiple R-squared:  0.5636,    Adjusted R-squared:  0.561 
+F-statistic: 216.1 on 3 and 502 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+</section>
+<section id="e-do-the-signs-on-the-3-estimated-slope-coefficients-make-sense-why-or-why-not" class="level4">
+<h4 class="anchored" data-anchor-id="e-do-the-signs-on-the-3-estimated-slope-coefficients-make-sense-why-or-why-not">1.e) Do the signs on the 3 estimated slope coefficients make sense? Why or why not?</h4>
+<p>The estimated slope coefficients align with expectations for the median home value determination. As generally observed, the number of rooms per home shows a positive relationship, while both age and crime rate exhibit inverse correlations with home values. Older houses typically depreciate in value over time, reflecting a negative correlation, while higher crime rates often decrease the desirability of an area, leading to lower demand and subsequently lower home values. Therefore, the estimated coefficients in the model are anticipated to be negative, reflecting the adverse effects of house age and crime rate on the estimated median home value.</p>
+</section>
+<section id="f-in-1c-optim-returned-the-hessian-matrix-which-enabled-you-to-calculate-the-standard-errors-of-the-mles.-in-1d-lm-provided-the-standard-errors-from-analytical-expressions-we-derived-in-class.-suppose-however-that-you-were-unable-to-calculate-the-standard-errors-and-needed-to-use-a-bootstrap-to-estimate-them.-write-r-code-to-perform-a-bootstrap-to-estimate-the-standard-errors-of-the-3-hatbeta_textmle-parameters.-each-time-through-the-loop-you-may-use-lm-and-coef-if-you-would-like-or-you-may-calculate-hatbeta-directly-from-matrices-you-may-not-use-the-boot-function-from-the-boot-package." class="level4">
+<h4 class="anchored" data-anchor-id="f-in-1c-optim-returned-the-hessian-matrix-which-enabled-you-to-calculate-the-standard-errors-of-the-mles.-in-1d-lm-provided-the-standard-errors-from-analytical-expressions-we-derived-in-class.-suppose-however-that-you-were-unable-to-calculate-the-standard-errors-and-needed-to-use-a-bootstrap-to-estimate-them.-write-r-code-to-perform-a-bootstrap-to-estimate-the-standard-errors-of-the-3-hatbeta_textmle-parameters.-each-time-through-the-loop-you-may-use-lm-and-coef-if-you-would-like-or-you-may-calculate-hatbeta-directly-from-matrices-you-may-not-use-the-boot-function-from-the-boot-package.">1.f) In 1c, <code>optim()</code> returned the hessian matrix, which enabled you to calculate the standard errors of the MLEs. In 1d, <code>lm()</code> provided the standard errors from analytical expressions we derived in class. Suppose, however, that you were unable to calculate the standard errors and needed to use a bootstrap to estimate them. Write <code>R</code> code to perform a bootstrap to estimate the standard errors of the 3 <span class="math inline">\(\hat{\beta}_\text{MLE}\)</span> parameters. Each time through the loop, you may use <code>lm()</code> and <code>coef()</code> if you would like, or you may calculate <span class="math inline">\(\hat{\beta}\)</span> directly from matrices; you may <strong>not</strong> use the <code>boot()</code> function from the <code>boot</code> package.</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(X)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA_real_</span>, <span class="at">nrow=</span>B, <span class="at">ncol=</span><span class="fu">ncol</span>(X))</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>X_test <span class="ot">&lt;-</span> X[,<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>)]</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(b <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>B) {</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  draws <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>n, <span class="at">size=</span>n, <span class="at">replace=</span>T)</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  Y_boot <span class="ot">&lt;-</span> Y[draws,]</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  X_boot <span class="ot">&lt;-</span> X_test[draws,]</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  res[b,] <span class="ot">&lt;-</span> <span class="fu">lm</span>(Y_boot <span class="sc">~</span> X_boot)<span class="sc">$</span>coef</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>serr <span class="ot">&lt;-</span> <span class="fu">apply</span>(res, <span class="dv">2</span>, <span class="cf">function</span>(x) <span class="fu">sqrt</span>(<span class="fu">var</span>(x)))</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"The standard errors estimated from the bootstrap are:"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "The standard errors estimated from the bootstrap are:"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>serr[<span class="fu">cbind</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.67701162 0.00927441 0.03502999</code></pre>
+</div>
+</div>
+</section>
+<section id="g-use-your-estimates-and-standard-errors-from-1c-above-to-test-whether-the-3-beta-slope-coefficients-are-each-separately-statistically-significantly-different-from-zero-at-a-95-confidence-level.-check-your-results-against-the-output-in-1d-above." class="level4">
+<h4 class="anchored" data-anchor-id="g-use-your-estimates-and-standard-errors-from-1c-above-to-test-whether-the-3-beta-slope-coefficients-are-each-separately-statistically-significantly-different-from-zero-at-a-95-confidence-level.-check-your-results-against-the-output-in-1d-above.">1.g) Use your estimates and standard errors from 1c above to test whether the 3 <span class="math inline">\(\beta\)</span> slope coefficients are each (separately) statistically significantly different from zero at a 95% confidence level. Check your results against the output in 1d above.</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>critical_value <span class="ot">&lt;-</span> <span class="fu">qt</span>(<span class="dv">1</span><span class="sc">-</span>alpha<span class="sc">/</span><span class="dv">2</span>,n<span class="dv">-3</span>)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>beta_stat <span class="ot">&lt;-</span> beta_mle<span class="sc">/</span>std_error[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>]</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Beta Statistics"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Beta Statistics"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>beta_stat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -8.557233 20.061175 -5.013230 -6.219605</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>critical_value <span class="ot">&lt;-</span> <span class="fu">qt</span>(<span class="dv">1</span> <span class="sc">-</span> alpha <span class="sc">/</span> <span class="dv">2</span>, n<span class="dv">-3</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Critical Value"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Critical Value"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(critical_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.964691</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"All the 3 slope coefficients are statistically significant (at 95% confidence level) because absolute value of each t-stat is greater than critical value."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "All the 3 slope coefficients are statistically significant (at 95% confidence level) because absolute value of each t-stat is greater than critical value."</code></pre>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+</section>
+<section id="question-2-a-poisson-model-for-count-data" class="level2">
+<h2 class="anchored" data-anchor-id="question-2-a-poisson-model-for-count-data">Question 2: A Poisson Model for Count Data</h2>
+<p>Load the <code>trading_behavior</code> dataset.</p>
+<p>The data provides 200 observations on equity trading behavior of Anderson students. <code>id</code> is an anonymized identifier for the student. <code>numtrades</code> is the median weekly number trades made by each student during the Fall quarter. <code>program</code> indicates whether the student is in the MSBA (1), MBA (2), or MFE (3) program (note that you may need to store this variable as a factor or convert it to a set of dummy variables when using it to fit a statistical model). <code>finlittest</code> is the students’ scores on a financial literacy test taken before entering their graduate program (higher scores indicate higher financial “literacy”).</p>
+<p>Assume you want to model the number of trades as a function of graduate program (where <span class="math inline">\(\mathbbm{1}\)</span> is an indicator function) and financial literacy:</p>
+<p><span class="math display">\[ y_i \sim \text{Pois}(\mu_i) \]</span></p>
+<p><span class="math display">\[ \log \mu_i = \beta_0 + \beta_1\mathbbm{1}(MBA) + \beta_2\mathbbm{1}(MFE) + \beta_3 \text{finlittest} \]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>trading_behavior <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"trading_behavior.csv"</span>)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(trading_behavior)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   id numtrades program finlittest
+1  45         0     MFE         66
+2 108         0    MSBA         66
+3  15         0     MFE         69
+4  67         0     MFE         67
+5 153         0     MFE         65
+6  51         0    MSBA         67</code></pre>
+</div>
+</div>
+<section id="a-a-poisson-density-for-random-variable-y-with-parameter-mu-is-fymu-exp-mumuyy.-suppose-we-let-each-y_i-have-its-own-parameter-mu_i-with-link-function-logcdot-specifically-logmu_i-x_ibeta.-assume-the-data-are-sampled-independently.-write-mathematically-the-joint-log-likelihood-function." class="level4">
+<h4 class="anchored" data-anchor-id="a-a-poisson-density-for-random-variable-y-with-parameter-mu-is-fymu-exp-mumuyy.-suppose-we-let-each-y_i-have-its-own-parameter-mu_i-with-link-function-logcdot-specifically-logmu_i-x_ibeta.-assume-the-data-are-sampled-independently.-write-mathematically-the-joint-log-likelihood-function.">2.a) A Poisson density for random variable <span class="math inline">\(Y\)</span> with parameter <span class="math inline">\(\mu\)</span> is <span class="math inline">\(f(y|\mu) = \exp(-\mu)\mu^y/y!\)</span>. Suppose we let each <span class="math inline">\(Y_i\)</span> have it’s own parameter <span class="math inline">\(\mu_i\)</span> with link function <span class="math inline">\(\log(\cdot)\)</span>: specifically, <span class="math inline">\(\log(\mu_i) = x_i'\beta\)</span>. Assume the data are sampled independently. Write, mathematically, the joint log-likelihood function.</h4>
+<p>$$</p>
+<p><span class="math display">\[\begin{align}
+&amp; f(y|\mu) = \frac{e^{-\mu} \mu^y}{y!} \\
+&amp; \log(\mu_i) = \beta_0 + \beta_1 \times 1(\text{MBA}) + \beta_2 \times 1(\text{MFE}) + \beta_3 \times \text{finlittest} \\
+&amp; \log f(y_i | \mu_i) = \log \left( \frac{e^{-\mu_i} \mu_i^{y_i}}{y_i!} \right) = -\mu_i + y_i \log(\mu_i) - \log(y_i!) \\
+&amp; \ell(\beta) = \sum_{i=1}^{n} \left[ -\mu_i + y_i \log(\mu_i) - \log(y_i!) \right] \\
+&amp; \ell(\beta) = \sum_{i=1}^{n} \left[ -\mu_i + y_i \log(\mu_i) - \log(\Gamma(y_i + 1)) \right] \\
+&amp; \mu_i = e^{(\beta_0 + \beta_1 \times 1(\text{MBA}_i) + \beta_2 \times 1(\text{MFE}_i) + \beta_3 \times \text{finlittest}_i)}
+\end{align}\]</span></p>
+<p>$$</p>
+</section>
+<section id="b-write-an-r-function-to-calculate-the-log-likelihood-function-from-2a-above.-your-function-should-take-3-arguments-1-a-vector-beta-of-all-four-parameters-2-an-n-times-k-matrix-x-and-3-a-vector-or-n-times-1-matrix-y." class="level4">
+<h4 class="anchored" data-anchor-id="b-write-an-r-function-to-calculate-the-log-likelihood-function-from-2a-above.-your-function-should-take-3-arguments-1-a-vector-beta-of-all-four-parameters-2-an-n-times-k-matrix-x-and-3-a-vector-or-n-times-1-matrix-y.">2.b) Write an <code>R</code> function to calculate the log-likelihood function from 2a above. Your function should take 3 arguments: (1) a vector <span class="math inline">\(\beta\)</span> of all (four) parameters, (2) an <span class="math inline">\(n \times k\)</span> matrix <span class="math inline">\(X\)</span>, and (3) a vector or <span class="math inline">\(n \times 1\)</span> matrix <span class="math inline">\(y\)</span>.</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>trading_behavior<span class="sc">$</span>program <span class="ot">&lt;-</span> <span class="fu">relevel</span>(<span class="fu">factor</span>(trading_behavior<span class="sc">$</span>program), <span class="at">ref =</span> <span class="st">'MSBA'</span>)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span> program <span class="sc">+</span> finlittest, <span class="at">data =</span> trading_behavior)</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(trading_behavior<span class="sc">$</span>numtrades)</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>initial_beta <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(<span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(x)))</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>loglik_poisson <span class="ot">&lt;-</span> <span class="cf">function</span>(beta, x, y) {</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>    predicted_values <span class="ot">&lt;-</span> x <span class="sc">%*%</span> beta</span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>    mu <span class="ot">&lt;-</span> <span class="fu">exp</span>(predicted_values)</span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a>    llp <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="sc">-</span>mu <span class="sc">+</span> y <span class="sc">*</span> predicted_values <span class="sc">-</span> <span class="fu">lgamma</span>(y <span class="sc">+</span> <span class="dv">1</span>))</span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(llp)</span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">loglik_poisson</span>(initial_beta, x, y))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -247.6471</code></pre>
+</div>
+</div>
+</section>
+<section id="c-use-optim-and-your-function-from-1b-to-find-hatbeta_textmle-as-well-as-their-standard-errors." class="level4">
+<h4 class="anchored" data-anchor-id="c-use-optim-and-your-function-from-1b-to-find-hatbeta_textmle-as-well-as-their-standard-errors.">2.c) Use <code>optim()</code> and your function from 1b to find <span class="math inline">\(\hat{\beta}_\text{MLE}\)</span> as well as their standard errors.</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>initial_beta <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(<span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(x)))</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="at">par=</span>initial_beta, </span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">fn=</span>loglik_poisson, <span class="at">x=</span>x, </span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">y=</span>y, <span class="at">method =</span> <span class="st">"BFGS"</span>, </span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">control=</span><span class="fu">list</span>(<span class="at">fnscale=</span><span class="sc">-</span><span class="dv">1</span>),</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>                <span class="at">hessian =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>beta_mle_poisson <span class="ot">&lt;-</span> result<span class="sc">$</span>par</span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>std_errors_mle_poisson <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="sc">-</span><span class="fu">diag</span>(<span class="fu">solve</span>(result<span class="sc">$</span>hessian)))</span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(beta_mle_poisson)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -6.8385058  1.0859384  0.3604895  0.0682507</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(std_errors_mle_poisson)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.8917300 0.3560795 0.4389272 0.0105377</code></pre>
+</div>
+</div>
+</section>
+<section id="d-fit-the-model-using-glm.-compare-your-results-to-the-output-from-optim-in-question-2c-above." class="level4">
+<h4 class="anchored" data-anchor-id="d-fit-the-model-using-glm.-compare-your-results-to-the-output-from-optim-in-question-2c-above.">2.d) Fit the model using <code>glm()</code>. Compare your results to the output from <code>optim</code> in question 2c above.</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glm</span>(y <span class="sc">~</span> x <span class="sc">-</span> <span class="dv">1</span>, <span class="at">data=</span>trading_behavior, <span class="at">family =</span> <span class="fu">poisson</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:  glm(formula = y ~ x - 1, family = poisson(), data = trading_behavior)
+
+Coefficients:
+x(Intercept)   xprogramMBA   xprogramMFE   xfinlittest  
+    -7.00093       1.08386       0.36981       0.07015  
+
+Degrees of Freedom: 200 Total (i.e. Null);  196 Residual
+Null Deviance:      319.2 
+Residual Deviance: 189.4    AIC: 373.5</code></pre>
+</div>
+</div>
+</section>
+<section id="e-the-analog-to-the-f-test-from-linear-regression-is-the-likelihood-ratio-test.-the-likelihood-ratio-test-statistic-is-calculated-as" class="level4">
+<h4 class="anchored" data-anchor-id="e-the-analog-to-the-f-test-from-linear-regression-is-the-likelihood-ratio-test.-the-likelihood-ratio-test-statistic-is-calculated-as">2.e) The “analog” to the F-test from linear regression is the Likelihood Ratio Test. The Likelihood Ratio test statistic is calculated as:</h4>
+<p><span class="math display">\[ LR_n = 2 \times [ \ell_n(\hat{\theta}) - \ell_n(\tilde{\theta})] \]</span></p>
+</section>
+<section id="where-ell_ncdot-is-the-log-likelihood-function-hattheta-is-the-mle-and-tildetheta-is-a-constrained-parameter-vector-e.g.-suppose-a-null-hypothesis-is-that-theta_20-theta_30.-the-likelihood-ratio-test-statistic-lr_n-has-an-asymptotic-chi-squared-distribution-with-k-degrees-of-freedom-i.e.-chi2_k-where-k-is-the-length-of-the-theta-vector." class="level4">
+<h4 class="anchored" data-anchor-id="where-ell_ncdot-is-the-log-likelihood-function-hattheta-is-the-mle-and-tildetheta-is-a-constrained-parameter-vector-e.g.-suppose-a-null-hypothesis-is-that-theta_20-theta_30.-the-likelihood-ratio-test-statistic-lr_n-has-an-asymptotic-chi-squared-distribution-with-k-degrees-of-freedom-i.e.-chi2_k-where-k-is-the-length-of-the-theta-vector.">where <span class="math inline">\(\ell_n(\cdot)\)</span> is the log likelihood function, <span class="math inline">\(\hat{\theta}\)</span> is the MLE, and <span class="math inline">\(\tilde{\theta}\)</span> is a constrained parameter vector (e.g., suppose a Null Hypothesis is that <span class="math inline">\(\theta_2=0\)</span> &amp; <span class="math inline">\(\theta_3=0\)</span>). The Likelihood Ratio test statistic <span class="math inline">\(LR_n\)</span> has an asymptotic chi-squared distribution with <span class="math inline">\(k\)</span> degrees of freedom (i.e., <span class="math inline">\(\chi^2_k\)</span> where <span class="math inline">\(k\)</span> is the length of the <span class="math inline">\(\theta\)</span> vector).</h4>
+</section>
+<section id="test-the-joint-hypothesis-that-beta_20-beta_30-at-the-95-confidence-level-using-a-likelihood-ratio-test.-specifically-use-your-log-likelihood-function-from-2b-above-and-your-parameter-estimates-from-2c-above-to-calculate-ell_nhatbeta_textmle.-then-replace-beta_2-and-beta_3-with-their-hypothesized-values-and-re-calculate-the-log-likehood-ie-ell_nhatbeta_100hatbeta_4.-next-compute-lr_n-and-compare-the-value-to-the-cut-off-of-a-chi-squared-distribution-with-4-degrees-of-freedom-to-assess-whether-or-not-you-reject-the-null-hypothesis." class="level4">
+<h4 class="anchored" data-anchor-id="test-the-joint-hypothesis-that-beta_20-beta_30-at-the-95-confidence-level-using-a-likelihood-ratio-test.-specifically-use-your-log-likelihood-function-from-2b-above-and-your-parameter-estimates-from-2c-above-to-calculate-ell_nhatbeta_textmle.-then-replace-beta_2-and-beta_3-with-their-hypothesized-values-and-re-calculate-the-log-likehood-ie-ell_nhatbeta_100hatbeta_4.-next-compute-lr_n-and-compare-the-value-to-the-cut-off-of-a-chi-squared-distribution-with-4-degrees-of-freedom-to-assess-whether-or-not-you-reject-the-null-hypothesis.">Test the joint hypothesis that <span class="math inline">\(\beta_2=0\)</span> &amp; <span class="math inline">\(\beta_3=0\)</span> at the 95% confidence level using a Likelihood Ratio test. Specifically, use your log-likelihood function from 2b above and your parameter estimates from 2c above to calculate <span class="math inline">\(\ell_n(\hat{\beta_\text{MLE}})\)</span>. Then replace <span class="math inline">\(\beta_2\)</span> and <span class="math inline">\(\beta_3\)</span> with their hypothesized values and re-calculate the log-likehood (ie, <span class="math inline">\(\ell_n([\hat{\beta}_1,0,0,\hat{\beta}_4])\)</span>. Next, compute <span class="math inline">\(LR_n\)</span> and compare the value to the cut-off of a chi-squared distribution with 4 degrees of freedom to assess whether or not you reject the Null Hypothesis.</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>loglik_mle <span class="ot">&lt;-</span> <span class="fu">loglik_poisson</span>(beta_mle_poisson, x, y)</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>beta_constrained <span class="ot">&lt;-</span> beta_mle_poisson</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>beta_constrained[<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>loglik_constrained <span class="ot">&lt;-</span> <span class="fu">loglik_poisson</span>(beta_constrained, x, y)</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Log likelihood ratio test statistic calculation</span></span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>LR_t <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> (loglik_mle <span class="sc">-</span> loglik_constrained)</span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Degrees of freedom = number of constrained parameters</span></span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Critical value from chi-squared distribution</span></span>
+<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a>chi_squared_critical <span class="ot">&lt;-</span> <span class="fu">qchisq</span>(<span class="fl">0.95</span>, df)</span>
+<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-17"><a href="#cb45-17" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Likelihood Ratio Test Statistic:"</span>, LR_t, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Likelihood Ratio Test Statistic: 90.36276 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Chi-squared critical value at 95% confidence level:"</span>, chi_squared_critical, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Chi-squared critical value at 95% confidence level: 5.991465 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Decision</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">abs</span>(LR_t) <span class="sc">&gt;</span> chi_squared_critical) {</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"Reject the null hypothesis: beta_2 and beta_3 is non-zero."</span>)</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"Fail to reject the null hypothesis: beta_2 and beta_3 may both be zero."</span>)</span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>    }</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reject the null hypothesis: beta_2 and beta_3 is non-zero.</code></pre>
+</div>
+</div>
+<p>We reject the null hypothesis which means that both beta_2 and beta_3 are zero as the test statistic is greater than the chi-squared value at the 95% confidence interval.</p>
+<div style="page-break-after: always;"></div>
+<p><strong>Question 3 is OPTIONAL. If you accurately complete it, you will receive 2 bonus points toward your final grade.</strong></p>
+</section>
+</section>
+<section id="question-3-estimating-demand-via-the-multi-nomial-logit-model-mnl" class="level2">
+<h2 class="anchored" data-anchor-id="question-3-estimating-demand-via-the-multi-nomial-logit-model-mnl">Question 3: Estimating Demand via the Multi-Nomial Logit Model (MNL)</h2>
+<p>Suppose you have <span class="math inline">\(i=1,\ldots,n\)</span> consumers who each select exactly one product <span class="math inline">\(j\)</span> from a set of <span class="math inline">\(J\)</span> products. The outcome variable is the identity of the product chosen <span class="math inline">\(y_i \in \{1, \ldots, J\}\)</span> or equivalently a vector of <span class="math inline">\(J-1\)</span> zeros and <span class="math inline">\(1\)</span> one, where the <span class="math inline">\(1\)</span> indicates the selected product. For example, if the third product was chosen out of 4 products, then either <span class="math inline">\(y=3\)</span> or <span class="math inline">\(y=(0,0,1,0)\)</span> depending on how you want to represent it. Suppose also that you have a vector of data on each product <span class="math inline">\(x_j\)</span> (eg, size, price, etc.).</p>
+<p>The MNL model posits that the probability that consumer <span class="math inline">\(i\)</span> chooses product <span class="math inline">\(j\)</span> is:</p>
+<p><span class="math display">\[ \mathbb{P}_i(j) = \frac{e^{x_j'\beta}}{\sum_{k=1}^Je^{x_k'\beta}} \]</span></p>
+<p>For example, if there are 4 products, the probability that consumer <span class="math inline">\(i\)</span> chooses product 3 is:</p>
+<p><span class="math display">\[ \mathbb{P}_i(3) = \frac{e^{x_3'\beta}}{e^{x_1'\beta} + e^{x_2'\beta} + e^{x_3'\beta} + e^{x_4'\beta}} \]</span></p>
+<p>A clever way to write the individual likelihood function for consumer <span class="math inline">\(i\)</span> is the product of the <span class="math inline">\(J\)</span> probabilities, each raised to the power of an indicator variable (<span class="math inline">\(\delta_{ij}\)</span>) that indicates the chosen product:</p>
+<p><span class="math display">\[ L_i(\beta) = \prod_{j=1}^J \mathbb{P}_i(j)^{\delta_{ij}} = \mathbb{P}_i(1)^{\delta_{i1}} \times \ldots \times \mathbb{P}_i(J)^{\delta_{iJ}}\]</span></p>
+<p>Notice that if the consumer selected product <span class="math inline">\(j=3\)</span>, then <span class="math inline">\(\delta_{i3}=1\)</span> while <span class="math inline">\(\delta_{i1}=\delta_{i2}=\delta_{i4}=0\)</span> and the likelihood is:</p>
+<p><span class="math display">\[ L_i(\beta) = \mathbb{P}_i(1)^0 \times \mathbb{P}_i(2)^0 \times \mathbb{P}_i(3)^1 \times \mathbb{P}_i(4)^0 = \mathbb{P}_i(3) = \frac{e^{x_3'\beta}}{\sum_{k=1}^Je^{x_k'\beta}} \]</span></p>
+<p>The joint likelihood (across all consumers) is the product of the <span class="math inline">\(n\)</span> individual likelihoods:</p>
+<p><span class="math display">\[ L_n(\beta) = \prod_{i=1}^n L_i(\beta) = \prod_{i=1}^n \prod_{j=1}^J \mathbb{P}_i(j)^{\delta_{ij}} \]</span></p>
+<p>And the joint log-likelihood function is:</p>
+<p><span class="math display">\[ \ell_n(\beta) = \sum_{i=1}^n \sum_{j=1}^J \delta_{ij} \log(\mathbb{P}_i(j)) \]</span></p>
+<p>Use the <code>yogurt_data</code> dataset, which provides the anonymized consumer identifiers (<code>id</code>), a vector indicating the chosen product (<code>y1</code>:<code>y4</code>), a vector indicating if any products were “featured” in the store as a form of advertising (<code>f1</code>:<code>f4</code>), and the products’ prices (<code>p1</code>:<code>p4</code>). For example, consumer 1 purchased yogurt 4 at a price of 0.079/oz and none of the yogurts were featured/advertised at the time of consumer 1’s purchase. Consumers 2 through 7 each bought yogurt 2, etc.</p>
+<p>Let the vector of product features include brand dummy variables for yogurts 1-3 (omit a dummy for product 4 to avoid multi-collinearity), a dummy variable to indicate featured, and a continuous variable for price:</p>
+<p><span class="math display">\[ x_j' = [\mathbbm{1}(\text{Yogurt 1}), \mathbbm{1}(\text{Yogurt 2}), \mathbbm{1}(\text{Yogurt 3}), X_f, X_p] \]</span></p>
+<p>You will need to create the product dummies. The variables for featured and price are included in the dataset. The “hard part” of this likelihood function is organizing the data.</p>
+<p>Your task: Code up the log-likelihood function. Use <code>optim()</code> to find the MLEs for the 5 parameters (<span class="math inline">\(\beta_1, \beta_2, \beta_3, \beta_f, \beta_p\)</span>).</p>
+<p>(Hint: you should find 2 positive and 1 negative product intercepts, a small positive coefficient estimate for featured, and a large negative coefficient estimate for price.)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="do">## finished this partly with the help of ChatGPT and partly with my study group.</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.3     ✔ readr     2.1.4
+✔ forcats   1.0.0     ✔ stringr   1.5.0
+✔ ggplot2   3.4.3     ✔ tibble    3.2.1
+✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+✔ purrr     1.0.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>yogurt_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"yogurt_data.csv"</span>)</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>yogurt_data <span class="ot">&lt;-</span> yogurt_data <span class="sc">%&gt;%</span> </span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">yogurt_1 =</span> <span class="fu">as.integer</span>(y1 <span class="sc">==</span> <span class="dv">1</span>),</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">yogurt_2 =</span> <span class="fu">as.integer</span>(y2 <span class="sc">==</span> <span class="dv">1</span>),</span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">yogurt_3 =</span> <span class="fu">as.integer</span>(y3 <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>log_likelihood <span class="ot">&lt;-</span> <span class="cf">function</span>(beta, data) {</span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>  x1Beta <span class="ot">&lt;-</span> beta[<span class="dv">1</span>] <span class="sc">+</span> beta[<span class="dv">4</span>] <span class="sc">*</span> data<span class="sc">$</span>f1 <span class="sc">+</span> beta[<span class="dv">5</span>] <span class="sc">*</span> data<span class="sc">$</span>p1</span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a>  x2Beta <span class="ot">&lt;-</span> beta[<span class="dv">2</span>] <span class="sc">+</span> beta[<span class="dv">4</span>] <span class="sc">*</span> data<span class="sc">$</span>f2 <span class="sc">+</span> beta[<span class="dv">5</span>] <span class="sc">*</span> data<span class="sc">$</span>p2</span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a>  x3Beta <span class="ot">&lt;-</span> beta[<span class="dv">3</span>] <span class="sc">+</span> beta[<span class="dv">4</span>] <span class="sc">*</span> data<span class="sc">$</span>f3 <span class="sc">+</span> beta[<span class="dv">5</span>] <span class="sc">*</span> data<span class="sc">$</span>p3</span>
+<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a>  x4Beta <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="sc">+</span> beta[<span class="dv">4</span>] <span class="sc">*</span> data<span class="sc">$</span>f4 <span class="sc">+</span> beta[<span class="dv">5</span>] <span class="sc">*</span> data<span class="sc">$</span>p4</span>
+<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a>  prob_1 <span class="ot">&lt;-</span> <span class="fu">exp</span>(x1Beta) <span class="sc">/</span> (<span class="fu">exp</span>(x1Beta) <span class="sc">+</span> <span class="fu">exp</span>(x2Beta) <span class="sc">+</span> <span class="fu">exp</span>(x3Beta) <span class="sc">+</span> <span class="fu">exp</span>(x4Beta))</span>
+<span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a>  prob_2 <span class="ot">&lt;-</span> <span class="fu">exp</span>(x2Beta) <span class="sc">/</span> (<span class="fu">exp</span>(x1Beta) <span class="sc">+</span> <span class="fu">exp</span>(x2Beta) <span class="sc">+</span> <span class="fu">exp</span>(x3Beta) <span class="sc">+</span> <span class="fu">exp</span>(x4Beta))</span>
+<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a>  prob_3 <span class="ot">&lt;-</span> <span class="fu">exp</span>(x3Beta) <span class="sc">/</span> (<span class="fu">exp</span>(x1Beta) <span class="sc">+</span> <span class="fu">exp</span>(x2Beta) <span class="sc">+</span> <span class="fu">exp</span>(x3Beta) <span class="sc">+</span> <span class="fu">exp</span>(x4Beta))</span>
+<span id="cb53-16"><a href="#cb53-16" aria-hidden="true" tabindex="-1"></a>  prob_4 <span class="ot">&lt;-</span> <span class="fu">exp</span>(x4Beta) <span class="sc">/</span> (<span class="fu">exp</span>(x1Beta) <span class="sc">+</span> <span class="fu">exp</span>(x2Beta) <span class="sc">+</span> <span class="fu">exp</span>(x3Beta) <span class="sc">+</span> <span class="fu">exp</span>(x4Beta))</span>
+<span id="cb53-17"><a href="#cb53-17" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">&lt;-</span> <span class="fu">sum</span>(data<span class="sc">$</span>yogurt_1 <span class="sc">*</span> <span class="fu">log</span>(prob_1) <span class="sc">+</span></span>
+<span id="cb53-18"><a href="#cb53-18" aria-hidden="true" tabindex="-1"></a>              data<span class="sc">$</span>yogurt_2 <span class="sc">*</span> <span class="fu">log</span>(prob_2) <span class="sc">+</span></span>
+<span id="cb53-19"><a href="#cb53-19" aria-hidden="true" tabindex="-1"></a>              data<span class="sc">$</span>yogurt_3 <span class="sc">*</span> <span class="fu">log</span>(prob_3) <span class="sc">+</span></span>
+<span id="cb53-20"><a href="#cb53-20" aria-hidden="true" tabindex="-1"></a>              (<span class="dv">1</span> <span class="sc">-</span> data<span class="sc">$</span>yogurt_1 <span class="sc">-</span> data<span class="sc">$</span>yogurt_2 <span class="sc">-</span> data<span class="sc">$</span>yogurt_3) <span class="sc">*</span> <span class="fu">log</span>(prob_4))</span>
+<span id="cb53-21"><a href="#cb53-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(ll)</span>
+<span id="cb53-22"><a href="#cb53-22" aria-hidden="true" tabindex="-1"></a>} </span>
+<span id="cb53-23"><a href="#cb53-23" aria-hidden="true" tabindex="-1"></a>out_optim <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="at">par =</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">5</span>), <span class="at">fn =</span> log_likelihood, <span class="at">data =</span> yogurt_data, <span class="at">control =</span> <span class="fu">list</span>(<span class="at">fnscale =</span> <span class="sc">-</span><span class="dv">1</span>),<span class="at">hessian =</span> <span class="cn">TRUE</span>, <span class="at">method=</span><span class="st">"BFGS"</span>)</span>
+<span id="cb53-24"><a href="#cb53-24" aria-hidden="true" tabindex="-1"></a>out_optim<span class="sc">$</span>par</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]   1.3908347   0.6440157  -3.0887416   0.4861072 -37.1591372</code></pre>
+</div>
+</div>
+<p>This matches with the hint provided (2 positive and 1 negative product intercepts, a small positive coefficient estimate for featured, and a large negative coefficient estimate for price.)</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

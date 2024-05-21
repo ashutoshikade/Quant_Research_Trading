@@ -1,0 +1,58 @@
+---
+title: "Problem Set 1"
+author: "Your Name"
+date: "Add Date"
+format: pdf
+---
+
+## Question 1
+
+#### 1a) Put question 1a text here.
+
+Put answer here. You can format your text as *italic* and **bold**.
+
+New paragraphs go on their own line, separated by an empty line.
+
+-   first
+-   second item
+-   third
+
+#### 1b) Put question 1b text here.
+
+Inline math goes between dollar signs (e.g., $\beta$).
+
+Centered math goes between double dollar signs:
+
+$$ \hat{\beta} = (X'X)^{-1}X'y $$
+
+You can align math using the `align` or `flalign` latex-style environments. Alignment is based on the ampersand, newlines are created with a double backslash, and equation numbering is controlled by the asterisk:
+
+```{=tex}
+\begin{align*}
+  c^2 
+  &= a^2 + b^2 \\
+  &= (a \times a) + (b \times b)
+\end{align*}
+```
+## Question 2
+
+#### 2a) Put question 2a text here
+
+You can write inline code that gets evaluated like so: `r x=3; x^2`.
+
+Or you can write inline code that doesn't get evaluated: `x^2`.
+
+You can write code between triple ticks and control evaluation with the `eval` option. Evaluated code will print the results of evaluation into the rendered version of this document.
+
+```{r, eval=TRUE}
+y <- 7
+y^2
+```
+
+```{r, fig.height=3, fig.width=5}
+plot(1:10, (1:10)^2, pch=20, main="My Plot", xlab="X", ylab="Y")
+```
+
+#### 2b) Put question 2b text here
+
+All of this information (and much more) is available on the Quarto [website](https://quarto.org/docs/guide/).
